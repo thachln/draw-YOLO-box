@@ -2,7 +2,7 @@
 import cv2
 import os
 import random
-
+from pathlib import Path
 
 # Config the global variables 
 LABEL_FOLDER = './labels/'  # Put the label files in this folder. 检测结果存放文件夹labels路径
@@ -97,14 +97,27 @@ if __name__ == '__main__':           # 只有在文件作为脚本文件直接�
     colors = [[random.randint(0, 255) for _ in range(3)]
               for _ in range(len(classes))]
 
-    image_names = open(IMAGE_NAME_LIST_PATH).read(
-    ).strip().split()  # 得到不带后缀的图片名
+    # image_names = open(IMAGE_NAME_LIST_PATH).read(
+    # ).strip().split()  # 得到不带后缀的图片名
 
     box_total = 0
     image_total = 0
-    for image_name in image_names:  # 遍历图片名称
-        box_num = draw_box_on_image(
-            image_name, classes, colors, LABEL_FOLDER, RAW_IMAGE_FOLDER, OUTPUT_IMAGE_FOLDER)  # 对图片画框
-        box_total += box_num
-        image_total += 1
-        print('Box number:', box_total, 'Image number:', image_total)
+
+    for path, folders, files in os.walk(RAW_IMAGE_FOLDER):
+        for f in files:
+            image_name = Path(f).stem
+            box_num = draw_box_on_image(
+                image_name, classes, colors, LABEL_FOLDER, RAW_IMAGE_FOLDER, OUTPUT_IMAGE_FOLDER)  # 对图片画框
+            box_total += box_num
+            image_total += 1
+            print('Box number:', box_total, 'Image number:', image_total)
+
+
+    # box_total = 0
+    # image_total = 0
+    # for image_name in image_names:  # 遍历图片名称
+    #     box_num = draw_box_on_image(
+    #         image_name, classes, colors, LABEL_FOLDER, RAW_IMAGE_FOLDER, OUTPUT_IMAGE_FOLDER)  # 对图片画框
+    #     box_total += box_num
+    #     image_total += 1
+    #     print('Box number:', box_total, 'Image number:', image_total)
